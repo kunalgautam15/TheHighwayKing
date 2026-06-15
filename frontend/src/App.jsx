@@ -1,8 +1,9 @@
 import "./App.css";
 import logo from "./assets/logo.jpg.jpg";
 import restaurant from "./assets/restaurant.webp.webp";
-// import menuPdf from "./assets/menu.pdf";
 import { useState } from "react";
+
+const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
 
 function App() {
   const [partyForm, setPartyForm] = useState({
@@ -29,20 +30,15 @@ function App() {
   const [menuMessage, setMenuMessage] = useState("");
 
   const downloadMenu = () => {
-    setMenuMessage("✅ Menu downloaded successfully!");
-
-    setTimeout(() => {
-      setMenuMessage("");
-    }, 3000);
+    setMenuMessage("Menu will be available soon.");
+    setTimeout(() => setMenuMessage(""), 3000);
   };
 
   const handlePartyBooking = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch(`${BACKEND_URL}/api/bookings`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(partyForm),
       });
 
@@ -82,11 +78,9 @@ function App() {
 
   const handleTableBooking = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/table-bookings", {
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(tableForm),
       });
 
@@ -126,7 +120,7 @@ function App() {
 
   const getPartyBookings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/bookings");
+      const response = await fetch(`${BACKEND_URL}/api/bookings`);
       const data = await response.json();
       setPartyBookings(data);
     } catch (error) {
@@ -137,7 +131,7 @@ function App() {
 
   const getTableBookings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/table-bookings");
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
       const data = await response.json();
       setTableBookings(data);
     } catch (error) {
@@ -159,7 +153,7 @@ function App() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
         method: "DELETE",
       });
 
@@ -185,12 +179,9 @@ function App() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/table-bookings/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings/${id}`, {
+        method: "DELETE",
+      });
 
       const data = await response.json();
 
@@ -260,7 +251,6 @@ function App() {
 
       <section className="about">
         <h2>Welcome To The Highway King</h2>
-
         <p>
           Family-friendly Pure Veg Restaurant with Party Booking Facilities,
           Delicious Food and Comfortable Dining Experience.
@@ -274,12 +264,7 @@ function App() {
           Click below to download our complete food menu.
         </p>
 
-        <a
-          href="#menu"
-          download
-          className="menu-download-btn"
-          onClick={downloadMenu}
-        >
+        <a href="#menu" className="menu-download-btn" onClick={downloadMenu}>
           Download Menu PDF
         </a>
 
@@ -294,44 +279,34 @@ function App() {
             type="text"
             placeholder="Your Name"
             value={partyForm.name}
-            onChange={(e) =>
-              setPartyForm({ ...partyForm, name: e.target.value })
-            }
+            onChange={(e) => setPartyForm({ ...partyForm, name: e.target.value })}
           />
 
           <input
             type="text"
             placeholder="Phone Number"
             value={partyForm.phone}
-            onChange={(e) =>
-              setPartyForm({ ...partyForm, phone: e.target.value })
-            }
+            onChange={(e) => setPartyForm({ ...partyForm, phone: e.target.value })}
           />
 
           <input
             type="text"
             placeholder="Event Type"
             value={partyForm.event}
-            onChange={(e) =>
-              setPartyForm({ ...partyForm, event: e.target.value })
-            }
+            onChange={(e) => setPartyForm({ ...partyForm, event: e.target.value })}
           />
 
           <input
             type="date"
             value={partyForm.date}
-            onChange={(e) =>
-              setPartyForm({ ...partyForm, date: e.target.value })
-            }
+            onChange={(e) => setPartyForm({ ...partyForm, date: e.target.value })}
           />
 
           <input
             type="number"
             placeholder="Number of Guests"
             value={partyForm.guests}
-            onChange={(e) =>
-              setPartyForm({ ...partyForm, guests: e.target.value })
-            }
+            onChange={(e) => setPartyForm({ ...partyForm, guests: e.target.value })}
           />
 
           <button onClick={handlePartyBooking}>Book Party</button>
@@ -346,43 +321,33 @@ function App() {
             type="text"
             placeholder="Your Name"
             value={tableForm.name}
-            onChange={(e) =>
-              setTableForm({ ...tableForm, name: e.target.value })
-            }
+            onChange={(e) => setTableForm({ ...tableForm, name: e.target.value })}
           />
 
           <input
             type="text"
             placeholder="Phone Number"
             value={tableForm.phone}
-            onChange={(e) =>
-              setTableForm({ ...tableForm, phone: e.target.value })
-            }
+            onChange={(e) => setTableForm({ ...tableForm, phone: e.target.value })}
           />
 
           <input
             type="date"
             value={tableForm.date}
-            onChange={(e) =>
-              setTableForm({ ...tableForm, date: e.target.value })
-            }
+            onChange={(e) => setTableForm({ ...tableForm, date: e.target.value })}
           />
 
           <input
             type="time"
             value={tableForm.time}
-            onChange={(e) =>
-              setTableForm({ ...tableForm, time: e.target.value })
-            }
+            onChange={(e) => setTableForm({ ...tableForm, time: e.target.value })}
           />
 
           <input
             type="number"
             placeholder="Number of Guests"
             value={tableForm.guests}
-            onChange={(e) =>
-              setTableForm({ ...tableForm, guests: e.target.value })
-            }
+            onChange={(e) => setTableForm({ ...tableForm, guests: e.target.value })}
           />
 
           <button onClick={handleTableBooking}>Book Table</button>
