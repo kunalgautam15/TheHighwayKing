@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const bookingRoutes = require("./routes/bookingRoutes");
 const tableBookingRoutes = require("./routes/tableBookingRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/table-bookings", tableBookingRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.send("The Highway King Backend Running 🚀");
