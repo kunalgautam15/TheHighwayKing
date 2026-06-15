@@ -1,7 +1,7 @@
 import "./App.css";
 import logo from "./assets/logo.jpg.jpg";
 import restaurant from "./assets/restaurant.webp.webp";
-import menuPdf from "./assets/menu.pdf";
+// import menuPdf from "./assets/menu.pdf";
 import { useState } from "react";
 
 function App() {
@@ -275,7 +275,7 @@ function App() {
         </p>
 
         <a
-          href={menuPdf}
+          href="#menu"
           download
           className="menu-download-btn"
           onClick={downloadMenu}
