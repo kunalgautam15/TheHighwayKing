@@ -1,0 +1,417 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+  scroll-behavior:smooth;
+}
+
+body{
+  overflow-x:hidden;
+  background:#fff;
+}
+
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background:rgba(0,0,0,0.92);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 40px;
+  z-index:1000;
+}
+
+.nav-logo img{
+  width:65px;
+  border-radius:10px;
+}
+
+.nav-links{
+  display:flex;
+  list-style:none;
+  gap:25px;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:white;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.nav-links a:hover{
+  color:#ff3b3b;
+}
+
+.hero{
+  height:100vh;
+  background-size:cover;
+  background-position:center;
+}
+
+.overlay{
+  height:100%;
+  background:rgba(0,0,0,0.65);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+  padding:20px;
+}
+
+.overlay h1{
+  font-size:5rem;
+  color:#ff3b3b;
+}
+
+.tagline{
+  font-size:1.5rem;
+  margin-top:10px;
+}
+
+.address{
+  margin-top:15px;
+  font-size:1.1rem;
+}
+
+.buttons{
+  margin-top:30px;
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.buttons a{
+  text-decoration:none;
+  background:#e11d48;
+  color:white;
+  padding:14px 28px;
+  border-radius:10px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.buttons a:hover{
+  background:#be123c;
+}
+
+.about,
+.booking-section,
+.contact-section,
+.admin-section,
+.map-section,
+.social-section{
+  padding:90px 20px;
+  text-align:center;
+  background:#fff8f0;
+}
+
+.about h2,
+.booking-section h2,
+.contact-section h2,
+.admin-section h2,
+.map-section h2,
+.social-section h2{
+  color:#c1121f;
+  font-size:2.8rem;
+  margin-bottom:30px;
+}
+
+.about p{
+  max-width:900px;
+  margin:auto;
+  line-height:1.8;
+  font-size:1.05rem;
+}
+
+.menu-section,
+.review-section{
+  padding:90px 20px;
+  background:#111827;
+  color:white;
+  text-align:center;
+}
+
+.menu-section h2,
+.review-section h2{
+  color:#ff3b3b;
+  margin-bottom:25px;
+  font-size:2.8rem;
+}
+
+.menu-text{
+  margin-bottom:30px;
+  font-size:1.1rem;
+}
+
+.menu-download-btn{
+  display:inline-block;
+  text-decoration:none;
+  background:#25D366;
+  color:white;
+  padding:16px 35px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.menu-download-btn:hover{
+  background:#1faa52;
+}
+
+.menu-message{
+  margin-top:20px;
+  color:#25D366;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.review-grid{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:25px;
+  margin-top:40px;
+}
+
+.review-card{
+  background:#1f2937;
+  padding:30px;
+  border-radius:15px;
+}
+
+.review-card h3{
+  color:#ff3b3b;
+  margin-bottom:15px;
+}
+
+.booking-form,
+.admin-login{
+  max-width:600px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.booking-form input,
+.admin-login input{
+  padding:15px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px;
+  outline:none;
+}
+
+.booking-form button,
+.admin-login button,
+.load-btn{
+  background:#25D366;
+  color:white;
+  border:none;
+  padding:16px;
+  border-radius:10px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.booking-form button:hover,
+.admin-login button:hover,
+.load-btn:hover{
+  background:#1faa52;
+}
+
+.table-section{
+  background:#fff;
+}
+
+.logout-btn{
+  background:#111827;
+  color:white;
+  border:none;
+  padding:14px 28px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-left:15px;
+  transition:0.3s;
+}
+
+.logout-btn:hover{
+  background:#000;
+}
+
+.map-section iframe{
+  max-width:1100px;
+  border-radius:18px;
+  margin-top:20px;
+}
+
+.insta-btn{
+  display:inline-block;
+  background:#E1306C;
+  color:white;
+  text-decoration:none;
+  padding:15px 30px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.insta-btn:hover{
+  background:#c2185b;
+}
+
+.admin-section{
+  background:white;
+}
+
+.admin-subtitle{
+  margin-top:50px;
+  margin-bottom:25px;
+  color:#c1121f;
+  font-size:2rem;
+}
+
+.booking-list{
+  max-width:1100px;
+  margin:20px auto 0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.booking-card{
+  background:#fff8f0;
+  border-radius:15px;
+  padding:20px;
+  text-align:left;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.booking-card h3{
+  color:#c1121f;
+  margin-bottom:10px;
+}
+
+.booking-card p{
+  margin-bottom:8px;
+}
+
+.delete-btn{
+  margin-top:15px;
+  width:100%;
+  background:#dc2626;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.delete-btn:hover{
+  background:#991b1b;
+}
+
+.whatsapp-float{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:60px;
+  height:60px;
+  background:#25D366;
+  color:white;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  text-decoration:none;
+  z-index:9999;
+  box-shadow:0 5px 18px rgba(0,0,0,0.25);
+  transition:0.3s;
+}
+
+.whatsapp-float:hover{
+  transform:scale(1.08);
+  background:#1faa52;
+}
+
+.contact-section p{
+  margin-bottom:12px;
+  font-size:1.1rem;
+}
+
+.footer{
+  background:black;
+  color:white;
+  text-align:center;
+  padding:25px;
+  font-size:15px;
+}
+
+@media(max-width:768px){
+
+  .navbar{
+    flex-direction:column;
+    gap:10px;
+    padding:15px;
+  }
+
+  .nav-links{
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .overlay h1{
+    font-size:2.8rem;
+  }
+
+  .tagline{
+    font-size:1.1rem;
+  }
+
+  .logout-btn{
+    margin-left:0;
+    margin-top:15px;
+  }
+
+  .buttons{
+    flex-direction:column;
+  }
+
+  .about h2,
+  .booking-section h2,
+  .contact-section h2,
+  .admin-section h2,
+  .map-section h2,
+  .social-section h2,
+  .menu-section h2,
+  .review-section h2{
+    font-size:2.1rem;
+  }
+
+  .whatsapp-float{
+    width:55px;
+    height:55px;
+    font-size:25px;
+    right:16px;
+    bottom:16px;
+  }
+
+}
