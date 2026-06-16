@@ -88,9 +88,9 @@ function App() {
       const updatedCart = cart.map((cartItem) =>
         cartItem.id === item.id
           ? {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-            }
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+          }
           : cartItem
       );
 
@@ -241,8 +241,7 @@ function App() {
           cart
             .map(
               (item) =>
-                `${item.name} x ${item.quantity} = ₹${
-                  item.price * item.quantity
+                `${item.name} x ${item.quantity} = ₹${item.price * item.quantity
                 }`
             )
             .join("\n") +
@@ -637,7 +636,31 @@ function App() {
           </button>
         </div>
       </section>
+      <section className="map-section">
+        <h2>Find Us On Map 📍</h2>
 
+        <iframe
+          src="https://www.google.com/maps?q=The%20Highway%20King%20Parichha%20Jhansi&output=embed"
+          width="100%"
+          height="400"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+          title="The Highway King Location"
+        ></iframe>
+
+        <br />
+        <br />
+
+        <a
+          href="https://share.google/B4gO6B71dM1s4vEOW"
+          target="_blank"
+          rel="noreferrer"
+          className="map-btn"
+        >
+          Open in Google Maps
+        </a>
+      </section>
       <section className="google-review-section">
         <h2>Love Our Food? ⭐</h2>
 
