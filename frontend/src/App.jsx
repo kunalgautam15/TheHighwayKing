@@ -640,9 +640,9 @@ function App() {
         <h2>Find Us On Map 📍</h2>
 
         <iframe
-          src="https://www.google.com/maps?q=The%20Highway%20King%20Parichha%20Jhansi&output=embed"
+          src="https://www.google.com/maps?q=25.5283895,78.770988&z=17&output=embed"
           width="100%"
-          height="400"
+          height="450"
           style={{ border: 0 }}
           allowFullScreen=""
           loading="lazy"
@@ -653,7 +653,7 @@ function App() {
         <br />
 
         <a
-          href="https://share.google/B4gO6B71dM1s4vEOW"
+          href="https://www.google.com/maps/place/the+highway+king/@25.5283894,78.7661171,17z/data=!3m1!4b1!4m6!3m5!1s0x397799cab1659d53:0x6516106ab80ebf14!8m2!3d25.5283895!4d78.770988!16s%2Fg%2F11z1vrsq5w"
           target="_blank"
           rel="noreferrer"
           className="map-btn"
