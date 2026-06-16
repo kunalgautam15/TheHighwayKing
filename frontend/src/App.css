@@ -99,7 +99,8 @@ body{
 .booking-section,
 .contact-section,
 .admin-section,
-.order-section{
+.order-section,
+.google-review-section{
   padding:90px 20px;
   text-align:center;
   background:#fff8f0;
@@ -109,7 +110,8 @@ body{
 .booking-section h2,
 .contact-section h2,
 .admin-section h2,
-.order-section h2{
+.order-section h2,
+.google-review-section h2{
   color:#c1121f;
   font-size:2.8rem;
   margin-bottom:30px;
@@ -280,6 +282,34 @@ body{
   background:#fff;
 }
 
+.google-review-section{
+  background:#fff;
+}
+
+.google-review-section p{
+  max-width:700px;
+  margin:0 auto 25px;
+  font-size:18px;
+  line-height:1.7;
+}
+
+.review-btn{
+  display:inline-block;
+  text-decoration:none;
+  background:#4285F4;
+  color:white;
+  padding:16px 35px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.review-btn:hover{
+  transform:translateY(-3px);
+  background:#2563eb;
+}
+
 .logout-btn{
   background:#111827;
   color:white;
@@ -396,5 +426,15 @@ body{
   .logout-btn{
     margin-left:0;
     margin-top:15px;
+  }
+
+  .about h2,
+  .booking-section h2,
+  .contact-section h2,
+  .admin-section h2,
+  .order-section h2,
+  .google-review-section h2,
+  .menu-section h2{
+    font-size:2.1rem;
   }
 }
