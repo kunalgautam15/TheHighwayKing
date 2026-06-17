@@ -3,8 +3,7 @@ import logo from "./assets/logo.jpg.jpg";
 import restaurant from "./assets/restaurant.webp.webp";
 import { useState } from "react";
 
-const BACKEND_URL =
-  "https://name-the-highway-king-backend.onrender.com";
+const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
 
 function App() {
   const [partyForm, setPartyForm] = useState({
@@ -39,37 +38,23 @@ function App() {
   const [cart, setCart] = useState([]);
 
   const foodItems = [
-    {
-      id: 1,
-      name: "Paneer Butter Masala",
-      price: 250,
-    },
-    {
-      id: 2,
-      name: "Kadhai Paneer",
-      price: 220,
-    },
-    {
-      id: 3,
-      name: "Veg Biryani",
-      price: 180,
-    },
-    {
-      id: 4,
-      name: "Burger",
-      price: 120,
-    },
-    {
-      id: 5,
-      name: "Pizza",
-      price: 300,
-    },
-    {
-      id: 6,
-      name: "Cold Coffee",
-      price: 90,
-    },
+    { id: 1, name: "Paneer Butter Masala", price: 250 },
+    { id: 2, name: "Kadhai Paneer", price: 220 },
+    { id: 3, name: "Veg Biryani", price: 180 },
+    { id: 4, name: "Burger", price: 120 },
+    { id: 5, name: "Pizza", price: 300 },
+    { id: 6, name: "Cold Coffee", price: 90 },
   ];
+
+  const cartTotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  const totalRevenue = orders.reduce(
+    (total, order) => total + (order.totalAmount || 0),
+    0
+  );
 
   const downloadMenu = () => {
     setMenuMessage("Menu will be available soon.");
@@ -80,17 +65,15 @@ function App() {
   };
 
   const addToCart = (item) => {
-    const existingItem = cart.find(
-      (cartItem) => cartItem.id === item.id
-    );
+    const existingItem = cart.find((cartItem) => cartItem.id === item.id);
 
     if (existingItem) {
       const updatedCart = cart.map((cartItem) =>
         cartItem.id === item.id
           ? {
-            ...cartItem,
-            quantity: cartItem.quantity + 1,
-          }
+              ...cartItem,
+              quantity: cartItem.quantity + 1,
+            }
           : cartItem
       );
 
@@ -110,11 +93,6 @@ function App() {
     const updatedCart = cart.filter((item) => item.id !== id);
     setCart(updatedCart);
   };
-
-  const cartTotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
 
   const handlePartyBooking = async () => {
     try {
@@ -210,6 +188,11 @@ function App() {
       return;
     }
 
+    if (!orderForm.customerName || !orderForm.phone || !orderForm.address) {
+      alert("Please fill all order details.");
+      return;
+    }
+
     try {
       const orderData = {
         customerName: orderForm.customerName,
@@ -241,7 +224,8 @@ function App() {
           cart
             .map(
               (item) =>
-                `${item.name} x ${item.quantity} = ₹${item.price * item.quantity
+                `${item.name} x ${item.quantity} = ₹${
+                  item.price * item.quantity
                 }`
             )
             .join("\n") +
@@ -269,21 +253,36 @@ function App() {
   };
 
   const getPartyBookings = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/bookings`);
-    const data = await response.json();
-    setPartyBookings(data);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/bookings`);
+      const data = await response.json();
+      setPartyBookings(data);
+    } catch (error) {
+      alert("Party bookings are not loading.");
+      console.log(error);
+    }
   };
 
   const getTableBookings = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
-    const data = await response.json();
-    setTableBookings(data);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
+      const data = await response.json();
+      setTableBookings(data);
+    } catch (error) {
+      alert("Table bookings are not loading.");
+      console.log(error);
+    }
   };
 
   const getOrders = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/orders`);
-    const data = await response.json();
-    setOrders(data);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/orders`);
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      alert("Orders are not loading.");
+      console.log(error);
+    }
   };
 
   const refreshAllBookings = () => {
@@ -293,21 +292,26 @@ function App() {
   };
 
   const deleteOrder = async (id) => {
-    const confirmDelete = window.confirm(
-      "Do you want to delete this order?"
-    );
+    const confirmDelete = window.confirm("Do you want to delete this order?");
 
     if (!confirmDelete) return;
 
-    const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
+        method: "DELETE",
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      alert("Order deleted successfully!");
-      getOrders();
+      if (data.success) {
+        alert("Order deleted successfully!");
+        getOrders();
+      } else {
+        alert("Order was not deleted.");
+      }
+    } catch (error) {
+      alert("Delete request failed.");
+      console.log(error);
     }
   };
 
@@ -414,9 +418,7 @@ function App() {
           Download Menu PDF
         </a>
 
-        {menuMessage && (
-          <p className="menu-message">{menuMessage}</p>
-        )}
+        {menuMessage && <p className="menu-message">{menuMessage}</p>}
       </section>
 
       <section id="order" className="order-section">
@@ -429,9 +431,7 @@ function App() {
 
               <p>₹{item.price}</p>
 
-              <button onClick={() => addToCart(item)}>
-                Add to Cart
-              </button>
+              <button onClick={() => addToCart(item)}>Add to Cart</button>
             </div>
           ))}
         </div>
@@ -563,9 +563,7 @@ function App() {
             }
           />
 
-          <button onClick={handlePartyBooking}>
-            Book Party
-          </button>
+          <button onClick={handlePartyBooking}>Book Party</button>
         </div>
       </section>
 
@@ -631,11 +629,10 @@ function App() {
             }
           />
 
-          <button onClick={handleTableBooking}>
-            Book Table
-          </button>
+          <button onClick={handleTableBooking}>Book Table</button>
         </div>
       </section>
+
       <section className="map-section">
         <h2>Find Us On Map 📍</h2>
 
@@ -661,12 +658,13 @@ function App() {
           Open in Google Maps
         </a>
       </section>
+
       <section className="google-review-section">
         <h2>Love Our Food? ⭐</h2>
 
         <p>
-          Your review helps us grow and serve you better.
-          Share your experience on Google.
+          Your review helps us grow and serve you better. Share your experience
+          on Google.
         </p>
 
         <a
@@ -688,9 +686,7 @@ function App() {
               type="password"
               placeholder="Enter Admin Password"
               value={adminPassword}
-              onChange={(e) =>
-                setAdminPassword(e.target.value)
-              }
+              onChange={(e) => setAdminPassword(e.target.value)}
             />
 
             <button onClick={loginAdmin}>Login</button>
@@ -701,12 +697,31 @@ function App() {
               Refresh Data
             </button>
 
-            <button
-              className="logout-btn"
-              onClick={() => setIsAdmin(false)}
-            >
+            <button className="logout-btn" onClick={() => setIsAdmin(false)}>
               Logout
             </button>
+
+            <div className="dashboard-stats">
+              <div className="stat-card">
+                <h3>{orders.length}</h3>
+                <p>Total Orders</p>
+              </div>
+
+              <div className="stat-card">
+                <h3>{partyBookings.length}</h3>
+                <p>Party Bookings</p>
+              </div>
+
+              <div className="stat-card">
+                <h3>{tableBookings.length}</h3>
+                <p>Table Bookings</p>
+              </div>
+
+              <div className="stat-card">
+                <h3>₹{totalRevenue}</h3>
+                <p>Total Revenue</p>
+              </div>
+            </div>
 
             <h3 className="admin-subtitle">Online Orders</h3>
 
@@ -717,12 +732,15 @@ function App() {
                 orders.map((order) => (
                   <div className="booking-card" key={order._id}>
                     <h3>{order.customerName}</h3>
+
                     <p>
                       <strong>Phone:</strong> {order.phone}
                     </p>
+
                     <p>
                       <strong>Address:</strong> {order.address}
                     </p>
+
                     <p>
                       <strong>Total:</strong> ₹{order.totalAmount}
                     </p>
@@ -754,15 +772,19 @@ function App() {
                 partyBookings.map((booking) => (
                   <div className="booking-card" key={booking._id}>
                     <h3>{booking.name}</h3>
+
                     <p>
                       <strong>Phone:</strong> {booking.phone}
                     </p>
+
                     <p>
                       <strong>Event:</strong> {booking.event}
                     </p>
+
                     <p>
                       <strong>Date:</strong> {booking.date}
                     </p>
+
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>
@@ -780,15 +802,19 @@ function App() {
                 tableBookings.map((booking) => (
                   <div className="booking-card" key={booking._id}>
                     <h3>{booking.name}</h3>
+
                     <p>
                       <strong>Phone:</strong> {booking.phone}
                     </p>
+
                     <p>
                       <strong>Date:</strong> {booking.date}
                     </p>
+
                     <p>
                       <strong>Time:</strong> {booking.time}
                     </p>
+
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>
@@ -812,9 +838,7 @@ function App() {
         <p>🕒 Open Daily: 6 AM - 1 AM</p>
       </section>
 
-      <footer className="footer">
-        © 2026 The Highway King
-      </footer>
+      <footer className="footer">© 2026 The Highway King</footer>
 
       <a
         href="https://wa.me/918960599978"
