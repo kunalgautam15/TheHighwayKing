@@ -321,6 +321,54 @@ function App() {
     }
   };
 
+  const deletePartyBooking = async (id) => {
+    const confirmDelete = window.confirm("Delete this party booking?");
+
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Party booking deleted successfully!");
+        getPartyBookings();
+      } else {
+        alert("Party booking was not deleted.");
+      }
+    } catch (error) {
+      alert("Delete request failed.");
+      console.log(error);
+    }
+  };
+
+  const deleteTableBooking = async (id) => {
+    const confirmDelete = window.confirm("Delete this table booking?");
+
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Table booking deleted successfully!");
+        getTableBookings();
+      } else {
+        alert("Table booking was not deleted.");
+      }
+    } catch (error) {
+      alert("Delete request failed.");
+      console.log(error);
+    }
+  };
+
   const loginAdmin = () => {
     if (adminPassword === "highwayking123") {
       setIsAdmin(true);
@@ -738,6 +786,13 @@ function App() {
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => deletePartyBooking(booking._id)}
+                    >
+                      Delete Booking
+                    </button>
                   </div>
                 ))
               )}
@@ -764,6 +819,13 @@ function App() {
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteTableBooking(booking._id)}
+                    >
+                      Delete Booking
+                    </button>
                   </div>
                 ))
               )}
