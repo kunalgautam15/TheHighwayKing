@@ -36,6 +36,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/track/:phone", async (req, res) => {
+  try {
+    const orders = await Order.find({
+      phone: req.params.phone,
+    }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 router.put("/:id/status", async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
