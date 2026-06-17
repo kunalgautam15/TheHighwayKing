@@ -58,49 +58,34 @@ function App() {
 
   const downloadMenu = () => {
     setMenuMessage("Menu will be available soon.");
-
-    setTimeout(() => {
-      setMenuMessage("");
-    }, 3000);
+    setTimeout(() => setMenuMessage(""), 3000);
   };
 
   const addToCart = (item) => {
     const existingItem = cart.find((cartItem) => cartItem.id === item.id);
 
     if (existingItem) {
-      const updatedCart = cart.map((cartItem) =>
-        cartItem.id === item.id
-          ? {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-            }
-          : cartItem
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
       );
-
-      setCart(updatedCart);
     } else {
-      setCart([
-        ...cart,
-        {
-          ...item,
-          quantity: 1,
-        },
-      ]);
+      setCart([...cart, { ...item, quantity: 1 }]);
     }
   };
 
   const removeFromCart = (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
-    setCart(updatedCart);
+    setCart(cart.filter((item) => item.id !== id));
   };
 
   const handlePartyBooking = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/bookings`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(partyForm),
       });
 
@@ -142,9 +127,7 @@ function App() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/table-bookings`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(tableForm),
       });
 
@@ -204,9 +187,7 @@ function App() {
 
       const response = await fetch(`${BACKEND_URL}/api/orders`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
 
@@ -237,7 +218,6 @@ function App() {
         );
 
         setCart([]);
-
         setOrderForm({
           customerName: "",
           phone: "",
@@ -291,6 +271,32 @@ function App() {
     getOrders();
   };
 
+  const updateOrderStatus = async (id, newStatus) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderStatus: newStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Order status updated successfully!");
+        getOrders();
+      } else {
+        alert("Order status was not updated.");
+      }
+    } catch (error) {
+      alert("Status update request failed.");
+      console.log(error);
+    }
+  };
+
   const deleteOrder = async (id) => {
     const confirmDelete = window.confirm("Do you want to delete this order?");
 
@@ -332,42 +338,20 @@ function App() {
         </div>
 
         <ul className="nav-links">
-          <li>
-            <a href="#home">Home</a>
-          </li>
-
-          <li>
-            <a href="#menu">Menu</a>
-          </li>
-
-          <li>
-            <a href="#order">Order</a>
-          </li>
-
-          <li>
-            <a href="#party-booking">Party</a>
-          </li>
-
-          <li>
-            <a href="#table-booking">Table</a>
-          </li>
-
-          <li>
-            <a href="#admin">Admin</a>
-          </li>
-
-          <li>
-            <a href="#contact">Contact</a>
-          </li>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#order">Order</a></li>
+          <li><a href="#party-booking">Party</a></li>
+          <li><a href="#table-booking">Table</a></li>
+          <li><a href="#admin">Admin</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
 
       <section
         id="home"
         className="hero"
-        style={{
-          backgroundImage: `url(${restaurant})`,
-        }}
+        style={{ backgroundImage: `url(${restaurant})` }}
       >
         <div className="overlay">
           <h1>THE HIGHWAY KING</h1>
@@ -410,11 +394,7 @@ function App() {
           Click below to download our complete food menu.
         </p>
 
-        <a
-          href="#menu"
-          className="menu-download-btn"
-          onClick={downloadMenu}
-        >
+        <a href="#menu" className="menu-download-btn" onClick={downloadMenu}>
           Download Menu PDF
         </a>
 
@@ -428,9 +408,7 @@ function App() {
           {foodItems.map((item) => (
             <div className="food-card" key={item.id}>
               <h3>{item.name}</h3>
-
               <p>₹{item.price}</p>
-
               <button onClick={() => addToCart(item)}>Add to Cart</button>
             </div>
           ))}
@@ -447,12 +425,8 @@ function App() {
                 <span>
                   {item.name} x {item.quantity}
                 </span>
-
                 <span>₹{item.price * item.quantity}</span>
-
-                <button onClick={() => removeFromCart(item.id)}>
-                  Remove
-                </button>
+                <button onClick={() => removeFromCart(item.id)}>Remove</button>
               </div>
             ))
           )}
@@ -465,10 +439,7 @@ function App() {
               placeholder="Your Name"
               value={orderForm.customerName}
               onChange={(e) =>
-                setOrderForm({
-                  ...orderForm,
-                  customerName: e.target.value,
-                })
+                setOrderForm({ ...orderForm, customerName: e.target.value })
               }
             />
 
@@ -477,10 +448,7 @@ function App() {
               placeholder="Phone Number"
               value={orderForm.phone}
               onChange={(e) =>
-                setOrderForm({
-                  ...orderForm,
-                  phone: e.target.value,
-                })
+                setOrderForm({ ...orderForm, phone: e.target.value })
               }
             />
 
@@ -488,10 +456,7 @@ function App() {
               placeholder="Delivery Address"
               value={orderForm.address}
               onChange={(e) =>
-                setOrderForm({
-                  ...orderForm,
-                  address: e.target.value,
-                })
+                setOrderForm({ ...orderForm, address: e.target.value })
               }
             ></textarea>
 
@@ -509,10 +474,7 @@ function App() {
             placeholder="Your Name"
             value={partyForm.name}
             onChange={(e) =>
-              setPartyForm({
-                ...partyForm,
-                name: e.target.value,
-              })
+              setPartyForm({ ...partyForm, name: e.target.value })
             }
           />
 
@@ -521,10 +483,7 @@ function App() {
             placeholder="Phone Number"
             value={partyForm.phone}
             onChange={(e) =>
-              setPartyForm({
-                ...partyForm,
-                phone: e.target.value,
-              })
+              setPartyForm({ ...partyForm, phone: e.target.value })
             }
           />
 
@@ -533,10 +492,7 @@ function App() {
             placeholder="Event Type"
             value={partyForm.event}
             onChange={(e) =>
-              setPartyForm({
-                ...partyForm,
-                event: e.target.value,
-              })
+              setPartyForm({ ...partyForm, event: e.target.value })
             }
           />
 
@@ -544,10 +500,7 @@ function App() {
             type="date"
             value={partyForm.date}
             onChange={(e) =>
-              setPartyForm({
-                ...partyForm,
-                date: e.target.value,
-              })
+              setPartyForm({ ...partyForm, date: e.target.value })
             }
           />
 
@@ -556,10 +509,7 @@ function App() {
             placeholder="Number of Guests"
             value={partyForm.guests}
             onChange={(e) =>
-              setPartyForm({
-                ...partyForm,
-                guests: e.target.value,
-              })
+              setPartyForm({ ...partyForm, guests: e.target.value })
             }
           />
 
@@ -576,10 +526,7 @@ function App() {
             placeholder="Your Name"
             value={tableForm.name}
             onChange={(e) =>
-              setTableForm({
-                ...tableForm,
-                name: e.target.value,
-              })
+              setTableForm({ ...tableForm, name: e.target.value })
             }
           />
 
@@ -588,10 +535,7 @@ function App() {
             placeholder="Phone Number"
             value={tableForm.phone}
             onChange={(e) =>
-              setTableForm({
-                ...tableForm,
-                phone: e.target.value,
-              })
+              setTableForm({ ...tableForm, phone: e.target.value })
             }
           />
 
@@ -599,10 +543,7 @@ function App() {
             type="date"
             value={tableForm.date}
             onChange={(e) =>
-              setTableForm({
-                ...tableForm,
-                date: e.target.value,
-              })
+              setTableForm({ ...tableForm, date: e.target.value })
             }
           />
 
@@ -610,10 +551,7 @@ function App() {
             type="time"
             value={tableForm.time}
             onChange={(e) =>
-              setTableForm({
-                ...tableForm,
-                time: e.target.value,
-              })
+              setTableForm({ ...tableForm, time: e.target.value })
             }
           />
 
@@ -622,10 +560,7 @@ function App() {
             placeholder="Number of Guests"
             value={tableForm.guests}
             onChange={(e) =>
-              setTableForm({
-                ...tableForm,
-                guests: e.target.value,
-              })
+              setTableForm({ ...tableForm, guests: e.target.value })
             }
           />
 
@@ -745,6 +680,25 @@ function App() {
                       <strong>Total:</strong> ₹{order.totalAmount}
                     </p>
 
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      {order.orderStatus || "New Order"}
+                    </p>
+
+                    <select
+                      value={order.orderStatus || "New Order"}
+                      onChange={(e) =>
+                        updateOrderStatus(order._id, e.target.value)
+                      }
+                      className="status-select"
+                    >
+                      <option value="New Order">New Order</option>
+                      <option value="Preparing">Preparing</option>
+                      <option value="Ready">Ready</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+
                     {order.items.map((item, index) => (
                       <p key={index}>
                         {item.name} x {item.quantity} = ₹
@@ -772,19 +726,15 @@ function App() {
                 partyBookings.map((booking) => (
                   <div className="booking-card" key={booking._id}>
                     <h3>{booking.name}</h3>
-
                     <p>
                       <strong>Phone:</strong> {booking.phone}
                     </p>
-
                     <p>
                       <strong>Event:</strong> {booking.event}
                     </p>
-
                     <p>
                       <strong>Date:</strong> {booking.date}
                     </p>
-
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>
@@ -802,19 +752,15 @@ function App() {
                 tableBookings.map((booking) => (
                   <div className="booking-card" key={booking._id}>
                     <h3>{booking.name}</h3>
-
                     <p>
                       <strong>Phone:</strong> {booking.phone}
                     </p>
-
                     <p>
                       <strong>Date:</strong> {booking.date}
                     </p>
-
                     <p>
                       <strong>Time:</strong> {booking.time}
                     </p>
-
                     <p>
                       <strong>Guests:</strong> {booking.guests}
                     </p>

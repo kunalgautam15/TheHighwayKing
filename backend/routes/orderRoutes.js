@@ -30,6 +30,32 @@ router.get("/", async (req, res) => {
     res.json(orders);
   } catch (error) {
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.put("/:id/status", async (req, res) => {
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        orderStatus: req.body.orderStatus,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      success: true,
+      message: "Order status updated successfully.",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
