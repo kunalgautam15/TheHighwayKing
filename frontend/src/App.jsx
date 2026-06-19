@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import PartyBooking from "./pages/PartyBooking";
 import TableBooking from "./pages/TableBooking";
+import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -15,42 +16,25 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
-
       <Navbar />
 
       <Routes>
-
         <Route path="/" element={<Home />} />
 
         <Route path="/menu" element={<Menu />} />
 
-        <Route
-          path="/party-booking"
-          element={<PartyBooking />}
-        />
+        <Route path="/party-booking" element={<PartyBooking />} />
 
-        <Route
-          path="/table-booking"
-          element={<TableBooking />}
-        />
+        <Route path="/table-booking" element={<TableBooking />} />
 
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
+        <Route path="/gallery" element={<Gallery />} />
 
-        <Route
-          path="/admin"
-          element={<Admin />}
-        />
+        <Route path="/contact" element={<Contact />} />
 
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
+        <Route path="/admin" element={<Admin />} />
 
+        <Route path="*" element={<NotFound />} />
       </Routes>
-
     </BrowserRouter>
   );
 }
