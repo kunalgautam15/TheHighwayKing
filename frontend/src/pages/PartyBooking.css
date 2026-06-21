@@ -1,0 +1,104 @@
+.party-page{
+  min-height:100vh;
+  background:#0b0b0b;
+  color:white;
+}
+
+.party-hero{
+  padding:150px 8% 80px;
+  text-align:center;
+  background:linear-gradient(135deg,#0b0b0b,#1a1a1a);
+}
+
+.party-hero h1{
+  font-size:52px;
+  color:#d4af37;
+  margin-bottom:18px;
+}
+
+.party-hero p{
+  color:#cfcfcf;
+  font-size:18px;
+}
+
+.party-container{
+  padding:80px 8%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+  align-items:start;
+}
+
+.party-info,
+.party-form{
+  background:#181818;
+  border:1px solid rgba(212,175,55,.22);
+  border-radius:24px;
+  padding:35px;
+}
+
+.party-info h2,
+.party-form h2{
+  color:#d4af37;
+  font-size:32px;
+  margin-bottom:25px;
+}
+
+.party-features{
+  display:grid;
+  gap:16px;
+}
+
+.party-features div{
+  background:#0f0f0f;
+  padding:16px;
+  border-radius:14px;
+  color:#eaeaea;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.party-form{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.party-form input,
+.party-form select,
+.party-form textarea{
+  width:100%;
+  padding:15px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#0f0f0f;
+  color:white;
+  font-size:15px;
+}
+
+.party-form textarea{
+  min-height:110px;
+  resize:none;
+}
+
+.party-form button{
+  margin-top:10px;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  background:#25D366;
+  color:white;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+@media(max-width:900px){
+  .party-container{
+    grid-template-columns:1fr;
+  }
+
+  .party-hero h1{
+    font-size:36px;
+  }
+}
