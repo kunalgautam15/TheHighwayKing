@@ -181,3 +181,62 @@
     font-size:34px;
   }
 }
+/* ===========================
+   MENU MANAGEMENT
+=========================== */
+
+.admin-menu-form{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+    margin-top:25px;
+    margin-bottom:35px;
+}
+
+.admin-menu-form input,
+.admin-menu-form textarea{
+    width:100%;
+    padding:15px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:#181818;
+    color:white;
+    border:1px solid rgba(212,175,55,.2);
+    font-size:15px;
+}
+
+.admin-menu-form textarea{
+    min-height:120px;
+    resize:vertical;
+    grid-column:1/-1;
+}
+
+.admin-menu-form button{
+    width:220px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#d4af37;
+    color:#111;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.admin-menu-form button:hover{
+    background:#c49b2d;
+    transform:translateY(-3px);
+}
+
+.admin-card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+
+.admin-card p{
+    line-height:1.7;
+}

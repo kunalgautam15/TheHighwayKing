@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Menu.css";
 
 const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
@@ -12,16 +12,38 @@ function Menu() {
     address: "",
   });
 
-  const foodItems = [
-    { id: 1, name: "Paneer Butter Masala", price: 250, category: "Main Course" },
-    { id: 2, name: "Kadhai Paneer", price: 220, category: "Main Course" },
-    { id: 3, name: "Veg Biryani", price: 180, category: "Rice" },
-    { id: 4, name: "Burger", price: 120, category: "Snacks" },
-    { id: 5, name: "Pizza", price: 300, category: "Snacks" },
-    { id: 6, name: "Cold Coffee", price: 90, category: "Beverages" },
+  const defaultFoodItems = [
+    { _id: "1", name: "Paneer Butter Masala", price: 250, category: "Main Course" },
+    { _id: "2", name: "Kadhai Paneer", price: 220, category: "Main Course" },
+    { _id: "3", name: "Veg Biryani", price: 180, category: "Rice" },
+    { _id: "4", name: "Burger", price: 120, category: "Snacks" },
+    { _id: "5", name: "Pizza", price: 300, category: "Snacks" },
+    { _id: "6", name: "Cold Coffee", price: 90, category: "Beverages" },
   ];
 
-  const categories = ["All", "Main Course", "Rice", "Snacks", "Beverages"];
+  const [foodItems, setFoodItems] = useState(defaultFoodItems);
+
+  useEffect(() => {
+    getMenuItems();
+  }, []);
+
+  const getMenuItems = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/menu`);
+      const data = await response.json();
+
+      if (data.success && data.items.length > 0) {
+        setFoodItems(data.items.filter((item) => item.isAvailable !== false));
+      }
+    } catch (error) {
+      console.log("Menu loading failed. Showing default menu.", error);
+    }
+  };
+
+  const categories = [
+    "All",
+    ...new Set(foodItems.map((item) => item.category).filter(Boolean)),
+  ];
 
   const filteredItems =
     activeCategory === "All"
@@ -34,23 +56,33 @@ function Menu() {
   );
 
   const addToCart = (item) => {
-    const exists = cart.find((cartItem) => cartItem.id === item.id);
+    const id = item._id || item.id;
+    const exists = cart.find((cartItem) => cartItem._id === id);
 
     if (exists) {
       setCart(
         cart.map((cartItem) =>
-          cartItem.id === item.id
+          cartItem._id === id
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         )
       );
     } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
+      setCart([
+        ...cart,
+        {
+          _id: id,
+          name: item.name,
+          price: item.price,
+          category: item.category,
+          quantity: 1,
+        },
+      ]);
     }
   };
 
   const removeFromCart = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
+    setCart(cart.filter((item) => item._id !== id));
   };
 
   const placeOrder = async () => {
@@ -146,11 +178,24 @@ function Menu() {
         <div className="menu-layout">
           <div className="menu-items">
             {filteredItems.map((item) => (
-              <div className="menu-card" key={item.id}>
+              <div className="menu-card" key={item._id || item.id}>
+                {item.image && (
+                  <img
+                    className="menu-card-image"
+                    src={item.image}
+                    alt={item.name}
+                  />
+                )}
+
                 <div>
                   <span className="veg-badge">● Pure Veg</span>
                   <h3>{item.name}</h3>
                   <p>{item.category}</p>
+
+                  {item.description && (
+                    <p className="menu-description">{item.description}</p>
+                  )}
+
                   <strong>₹{item.price}</strong>
                 </div>
 
@@ -166,7 +211,7 @@ function Menu() {
               <p className="empty-cart">Your cart is empty.</p>
             ) : (
               cart.map((item) => (
-                <div className="cart-row" key={item.id}>
+                <div className="cart-row" key={item._id}>
                   <div>
                     <h4>{item.name}</h4>
                     <p>
@@ -176,7 +221,7 @@ function Menu() {
 
                   <div>
                     <strong>₹{item.price * item.quantity}</strong>
-                    <button onClick={() => removeFromCart(item.id)}>
+                    <button onClick={() => removeFromCart(item._id)}>
                       Remove
                     </button>
                   </div>

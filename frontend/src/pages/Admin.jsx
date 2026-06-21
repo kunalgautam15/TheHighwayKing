@@ -10,6 +10,15 @@ function Admin() {
   const [orders, setOrders] = useState([]);
   const [partyBookings, setPartyBookings] = useState([]);
   const [tableBookings, setTableBookings] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+
+  const [menuForm, setMenuForm] = useState({
+    name: "",
+    price: "",
+    category: "",
+    description: "",
+    image: "",
+  });
 
   const totalRevenue = orders.reduce(
     (total, order) => total + (order.totalAmount || 0),
@@ -29,64 +38,101 @@ function Admin() {
     getOrders();
     getPartyBookings();
     getTableBookings();
+    getMenuItems();
   };
 
   const getOrders = async () => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/orders`);
-      const data = await response.json();
-      setOrders(data);
-    } catch (error) {
-      alert("Orders are not loading.");
-      console.log(error);
-    }
+    const response = await fetch(`${BACKEND_URL}/api/orders`);
+    const data = await response.json();
+    setOrders(data);
   };
 
   const getPartyBookings = async () => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/bookings`);
-      const data = await response.json();
-      setPartyBookings(data);
-    } catch (error) {
-      alert("Party bookings are not loading.");
-      console.log(error);
-    }
+    const response = await fetch(`${BACKEND_URL}/api/bookings`);
+    const data = await response.json();
+    setPartyBookings(data);
   };
 
   const getTableBookings = async () => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
-      const data = await response.json();
-      setTableBookings(data);
-    } catch (error) {
-      alert("Table bookings are not loading.");
-      console.log(error);
+    const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
+    const data = await response.json();
+    setTableBookings(data);
+  };
+
+  const getMenuItems = async () => {
+    const response = await fetch(`${BACKEND_URL}/api/menu`);
+    const data = await response.json();
+
+    if (data.success) {
+      setMenuItems(data.items);
+    }
+  };
+
+  const addMenuItem = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch(`${BACKEND_URL}/api/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...menuForm,
+        price: Number(menuForm.price),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Menu item added successfully!");
+
+      setMenuForm({
+        name: "",
+        price: "",
+        category: "",
+        description: "",
+        image: "",
+      });
+
+      getMenuItems();
+    } else {
+      alert("Menu item was not added.");
+    }
+  };
+
+  const deleteMenuItem = async (id) => {
+    const confirmDelete = window.confirm("Delete this menu item?");
+    if (!confirmDelete) return;
+
+    const response = await fetch(`${BACKEND_URL}/api/menu/${id}`, {
+      method: "DELETE",
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Menu item deleted!");
+      getMenuItems();
     }
   };
 
   const updateOrderStatus = async (id, newStatus) => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderStatus: newStatus,
-        }),
-      });
+    const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderStatus: newStatus,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        alert("Order status updated!");
-        getOrders();
-      } else {
-        alert("Order status was not updated.");
-      }
-    } catch (error) {
-      alert("Status update failed.");
-      console.log(error);
+    if (data.success) {
+      alert("Order status updated!");
+      getOrders();
     }
   };
 
@@ -94,20 +140,15 @@ function Admin() {
     const confirmDelete = window.confirm("Delete this order?");
     if (!confirmDelete) return;
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
-        method: "DELETE",
-      });
+    const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
+      method: "DELETE",
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        alert("Order deleted!");
-        getOrders();
-      }
-    } catch (error) {
-      alert("Delete failed.");
-      console.log(error);
+    if (data.success) {
+      alert("Order deleted!");
+      getOrders();
     }
   };
 
@@ -115,20 +156,15 @@ function Admin() {
     const confirmDelete = window.confirm("Delete this party booking?");
     if (!confirmDelete) return;
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
-        method: "DELETE",
-      });
+    const response = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
+      method: "DELETE",
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        alert("Party booking deleted!");
-        getPartyBookings();
-      }
-    } catch (error) {
-      alert("Delete failed.");
-      console.log(error);
+    if (data.success) {
+      alert("Party booking deleted!");
+      getPartyBookings();
     }
   };
 
@@ -136,20 +172,15 @@ function Admin() {
     const confirmDelete = window.confirm("Delete this table booking?");
     if (!confirmDelete) return;
 
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/table-bookings/${id}`, {
-        method: "DELETE",
-      });
+    const response = await fetch(`${BACKEND_URL}/api/table-bookings/${id}`, {
+      method: "DELETE",
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        alert("Table booking deleted!");
-        getTableBookings();
-      }
-    } catch (error) {
-      alert("Delete failed.");
-      console.log(error);
+    if (data.success) {
+      alert("Table booking deleted!");
+      getTableBookings();
     }
   };
 
@@ -210,6 +241,106 @@ function Admin() {
       </section>
 
       <section className="admin-section">
+        <h2>Add Menu Item</h2>
+
+        <form className="admin-menu-form" onSubmit={addMenuItem}>
+          <input
+            type="text"
+            placeholder="Dish Name"
+            value={menuForm.name}
+            onChange={(e) =>
+              setMenuForm({
+                ...menuForm,
+                name: e.target.value,
+              })
+            }
+            required
+          />
+
+          <input
+            type="number"
+            placeholder="Price"
+            value={menuForm.price}
+            onChange={(e) =>
+              setMenuForm({
+                ...menuForm,
+                price: e.target.value,
+              })
+            }
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Category"
+            value={menuForm.category}
+            onChange={(e) =>
+              setMenuForm({
+                ...menuForm,
+                category: e.target.value,
+              })
+            }
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Image URL optional"
+            value={menuForm.image}
+            onChange={(e) =>
+              setMenuForm({
+                ...menuForm,
+                image: e.target.value,
+              })
+            }
+          />
+
+          <textarea
+            placeholder="Description optional"
+            value={menuForm.description}
+            onChange={(e) =>
+              setMenuForm({
+                ...menuForm,
+                description: e.target.value,
+              })
+            }
+          ></textarea>
+
+          <button type="submit">Add Dish</button>
+        </form>
+      </section>
+
+      <section className="admin-section">
+        <h2>Menu Items</h2>
+
+        <div className="admin-grid">
+          {menuItems.length === 0 ? (
+            <p className="empty-admin">No menu items added yet.</p>
+          ) : (
+            menuItems.map((item) => (
+              <div className="admin-card" key={item._id}>
+                <h3>{item.name}</h3>
+                <p>
+                  <strong>Price:</strong> ₹{item.price}
+                </p>
+                <p>
+                  <strong>Category:</strong> {item.category}
+                </p>
+                <p>{item.description}</p>
+
+                <button
+                  className="danger-btn"
+                  onClick={() => deleteMenuItem(item._id)}
+                >
+                  Delete Dish
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="admin-section">
         <h2>Online Orders</h2>
 
         <div className="admin-grid">
@@ -220,9 +351,15 @@ function Admin() {
               <div className="admin-card" key={order._id}>
                 <h3>{order.customerName}</h3>
 
-                <p><strong>Phone:</strong> {order.phone}</p>
-                <p><strong>Address:</strong> {order.address}</p>
-                <p><strong>Total:</strong> ₹{order.totalAmount}</p>
+                <p>
+                  <strong>Phone:</strong> {order.phone}
+                </p>
+                <p>
+                  <strong>Address:</strong> {order.address}
+                </p>
+                <p>
+                  <strong>Total:</strong> ₹{order.totalAmount}
+                </p>
 
                 <p>
                   <strong>Status:</strong> {order.orderStatus || "New Order"}
@@ -271,10 +408,18 @@ function Admin() {
               <div className="admin-card" key={booking._id}>
                 <h3>{booking.name}</h3>
 
-                <p><strong>Phone:</strong> {booking.phone}</p>
-                <p><strong>Event:</strong> {booking.event}</p>
-                <p><strong>Date:</strong> {booking.date}</p>
-                <p><strong>Guests:</strong> {booking.guests}</p>
+                <p>
+                  <strong>Phone:</strong> {booking.phone}
+                </p>
+                <p>
+                  <strong>Event:</strong> {booking.event}
+                </p>
+                <p>
+                  <strong>Date:</strong> {booking.date}
+                </p>
+                <p>
+                  <strong>Guests:</strong> {booking.guests}
+                </p>
 
                 <button
                   className="danger-btn"
@@ -299,10 +444,18 @@ function Admin() {
               <div className="admin-card" key={booking._id}>
                 <h3>{booking.name}</h3>
 
-                <p><strong>Phone:</strong> {booking.phone}</p>
-                <p><strong>Date:</strong> {booking.date}</p>
-                <p><strong>Time:</strong> {booking.time}</p>
-                <p><strong>Guests:</strong> {booking.guests}</p>
+                <p>
+                  <strong>Phone:</strong> {booking.phone}
+                </p>
+                <p>
+                  <strong>Date:</strong> {booking.date}
+                </p>
+                <p>
+                  <strong>Time:</strong> {booking.time}
+                </p>
+                <p>
+                  <strong>Guests:</strong> {booking.guests}
+                </p>
 
                 <button
                   className="danger-btn"
