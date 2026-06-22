@@ -4,17 +4,20 @@ const galleryImageSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      default: "",
-    },
-
-    image: {
-      type: String,
       required: true,
+      trim: true,
     },
 
     category: {
       type: String,
       default: "Restaurant",
+      trim: true,
+    },
+
+    image: {
+      type: String,
+      required: true,
+      trim: true,
     },
   },
   {
