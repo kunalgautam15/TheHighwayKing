@@ -21,6 +21,10 @@ function Navbar() {
         </li>
 
         <li>
+          <Link to="/gallery">Gallery</Link>
+        </li>
+
+        <li>
           <Link to="/party-booking">Party Booking</Link>
         </li>
 

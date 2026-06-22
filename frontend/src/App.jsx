@@ -7,6 +7,7 @@ import Menu from "./pages/Menu";
 import PartyBooking from "./pages/PartyBooking";
 import TableBooking from "./pages/TableBooking";
 import TrackOrder from "./pages/TrackOrder";
+import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,11 @@ function App() {
         <Route
           path="/track-order"
           element={<TrackOrder />}
+        />
+
+        <Route
+          path="/gallery"
+          element={<Gallery />}
         />
 
         <Route

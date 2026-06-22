@@ -1,17 +1,13 @@
+import { Link } from "react-router-dom";
+
 import Hero from "../components/Hero";
 import restaurant from "../assets/restaurant.webp.webp";
-
-import img1 from "../assets/667684622_1364974539000228_7072891323784273819_n.jpg";
-import img2 from "../assets/667736821_1364974735666875_4019101381168717394_n.jpg";
-import img3 from "../assets/667987983_1364974462333569_4432384417421141288_n.jpg";
-import img4 from "../assets/669580013_1364974599000222_9532336355546882_n.jpg";
-import img5 from "../assets/670599051_1364974659000216_3768677059654462997_n.jpg";
-import img6 from "../assets/681302101_1380230924141256_1056288194259606910_n.jpg";
+import galleryData from "../data/galleryData";
 
 import "./Home.css";
 
 function Home() {
-  const galleryImages = [img1, img2, img3, img4, img5, img6];
+  const galleryImages = galleryData.slice(0, 6);
 
   return (
     <main className="home-page">
@@ -109,11 +105,17 @@ function Home() {
         </div>
 
         <div className="gallery-grid-v2">
-          {galleryImages.map((image, index) => (
-            <div className="gallery-item-v2" key={index}>
-              <img src={image} alt={`The Highway King ${index + 1}`} />
+          {galleryImages.map((item) => (
+            <div className="gallery-item-v2" key={item.id}>
+              <img src={item.image} alt={item.title} />
             </div>
           ))}
+        </div>
+
+        <div className="gallery-btn-box">
+          <Link to="/gallery" className="gallery-view-btn">
+            View Full Gallery
+          </Link>
         </div>
       </section>
 
@@ -155,7 +157,7 @@ function Home() {
         <p>
           Birthday • Anniversary • Kitty Party • Family Function • Corporate Meet
         </p>
-        <a href="/party-booking">Book Your Party</a>
+        <Link to="/party-booking">Book Your Party</Link>
       </section>
 
       <section className="review-section">
@@ -229,8 +231,8 @@ function Home() {
         <p>🕒 Open Daily: 6 AM - 1 AM</p>
 
         <div className="footer-links">
-          <a href="/menu">Order Food</a>
-          <a href="/party-booking">Book Party</a>
+          <Link to="/menu">Order Food</Link>
+          <Link to="/party-booking">Book Party</Link>
           <a
             href="https://g.page/r/CRS_DrhqEBZlEBM/review"
             target="_blank"
