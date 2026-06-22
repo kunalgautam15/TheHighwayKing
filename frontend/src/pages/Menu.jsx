@@ -13,12 +13,42 @@ function Menu() {
   });
 
   const defaultFoodItems = [
-    { _id: "1", name: "Paneer Butter Masala", price: 250, category: "Main Course" },
-    { _id: "2", name: "Kadhai Paneer", price: 220, category: "Main Course" },
-    { _id: "3", name: "Veg Biryani", price: 180, category: "Rice" },
-    { _id: "4", name: "Burger", price: 120, category: "Snacks" },
-    { _id: "5", name: "Pizza", price: 300, category: "Snacks" },
-    { _id: "6", name: "Cold Coffee", price: 90, category: "Beverages" },
+    {
+      _id: "1",
+      name: "Paneer Butter Masala",
+      price: 250,
+      category: "Main Course",
+    },
+    {
+      _id: "2",
+      name: "Kadhai Paneer",
+      price: 220,
+      category: "Main Course",
+    },
+    {
+      _id: "3",
+      name: "Veg Biryani",
+      price: 180,
+      category: "Rice",
+    },
+    {
+      _id: "4",
+      name: "Burger",
+      price: 120,
+      category: "Snacks",
+    },
+    {
+      _id: "5",
+      name: "Pizza",
+      price: 300,
+      category: "Snacks",
+    },
+    {
+      _id: "6",
+      name: "Cold Coffee",
+      price: 90,
+      category: "Beverages",
+    },
   ];
 
   const [foodItems, setFoodItems] = useState(defaultFoodItems);
@@ -51,18 +81,19 @@ function Menu() {
       : foodItems.filter((item) => item.category === activeCategory);
 
   const cartTotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + Number(item.price) * Number(item.quantity),
     0
   );
 
   const addToCart = (item) => {
-    const id = item._id || item.id;
-    const exists = cart.find((cartItem) => cartItem._id === id);
+    const itemId = item._id || item.id;
+
+    const exists = cart.find((cartItem) => cartItem.cartId === itemId);
 
     if (exists) {
       setCart(
         cart.map((cartItem) =>
-          cartItem._id === id
+          cartItem.cartId === itemId
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         )
@@ -71,9 +102,9 @@ function Menu() {
       setCart([
         ...cart,
         {
-          _id: id,
+          cartId: itemId,
           name: item.name,
-          price: item.price,
+          price: Number(item.price),
           category: item.category,
           quantity: 1,
         },
@@ -81,27 +112,42 @@ function Menu() {
     }
   };
 
-  const removeFromCart = (id) => {
-    setCart(cart.filter((item) => item._id !== id));
+  const removeFromCart = (cartId) => {
+    setCart(cart.filter((item) => item.cartId !== cartId));
   };
 
   const placeOrder = async () => {
+    const customerName = orderForm.customerName.trim();
+    const phone = orderForm.phone.trim();
+    const address = orderForm.address.trim();
+
     if (cart.length === 0) {
       alert("Your cart is empty.");
       return;
     }
 
-    if (!orderForm.customerName || !orderForm.phone || !orderForm.address) {
+    if (!customerName || !phone || !address) {
       alert("Please fill all order details.");
       return;
     }
 
+    if (phone.length < 10) {
+      alert("Please enter valid phone number.");
+      return;
+    }
+
     try {
+      const cleanItems = cart.map((item) => ({
+        name: item.name,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+      }));
+
       const orderData = {
-        customerName: orderForm.customerName,
-        phone: orderForm.phone,
-        address: orderForm.address,
-        items: cart,
+        customerName,
+        phone,
+        address,
+        items: cleanItems,
         totalAmount: cartTotal,
       };
 
@@ -115,16 +161,16 @@ function Menu() {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.success) {
         alert("Order placed successfully!");
 
         const message =
           `🛒 New Food Order\n\n` +
-          `Name: ${orderForm.customerName}\n` +
-          `Phone: ${orderForm.phone}\n` +
-          `Address: ${orderForm.address}\n\n` +
+          `Name: ${customerName}\n` +
+          `Phone: ${phone}\n` +
+          `Address: ${address}\n\n` +
           `Items:\n` +
-          cart
+          cleanItems
             .map(
               (item) =>
                 `${item.name} x ${item.quantity} = ₹${
@@ -146,7 +192,7 @@ function Menu() {
           address: "",
         });
       } else {
-        alert("Order was not placed.");
+        alert(data.message || "Order was not placed.");
       }
     } catch (error) {
       alert("Backend server is not responding.");
@@ -211,7 +257,7 @@ function Menu() {
               <p className="empty-cart">Your cart is empty.</p>
             ) : (
               cart.map((item) => (
-                <div className="cart-row" key={item._id}>
+                <div className="cart-row" key={item.cartId}>
                   <div>
                     <h4>{item.name}</h4>
                     <p>
@@ -221,7 +267,7 @@ function Menu() {
 
                   <div>
                     <strong>₹{item.price * item.quantity}</strong>
-                    <button onClick={() => removeFromCart(item._id)}>
+                    <button onClick={() => removeFromCart(item.cartId)}>
                       Remove
                     </button>
                   </div>

@@ -6,23 +6,34 @@ const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
 function TrackOrder() {
   const [phone, setPhone] = useState("");
   const [orders, setOrders] = useState([]);
+  const [searched, setSearched] = useState(false);
 
   const trackOrder = async () => {
-    if (!phone) {
+    const cleanPhone = phone.trim();
+
+    if (!cleanPhone) {
       alert("Please enter phone number.");
       return;
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/orders/track/${phone}`);
+      const response = await fetch(
+        `${BACKEND_URL}/api/orders/track/${cleanPhone}`
+      );
+
       const data = await response.json();
 
-      if (data.success) {
-        setOrders(data.orders);
+      setSearched(true);
+
+      if (response.ok && data.success) {
+        setOrders(data.orders || []);
       } else {
-        alert("No order found.");
+        setOrders([]);
+        alert(data.message || "No order found.");
       }
     } catch (error) {
+      setOrders([]);
+      setSearched(true);
       alert("Unable to track order.");
       console.log(error);
     }
@@ -49,15 +60,26 @@ function TrackOrder() {
 
         <div className="track-results">
           {orders.length === 0 ? (
-            <p className="no-order">No orders loaded yet.</p>
+            <p className="no-order">
+              {searched ? "No order found for this number." : "No orders loaded yet."}
+            </p>
           ) : (
             orders.map((order) => (
               <div className="track-card" key={order._id}>
                 <h3>{order.customerName}</h3>
 
-                <p><strong>Phone:</strong> {order.phone}</p>
-                <p><strong>Address:</strong> {order.address}</p>
-                <p><strong>Total:</strong> ₹{order.totalAmount}</p>
+                <p>
+                  <strong>Phone:</strong> {order.phone}
+                </p>
+
+                <p>
+                  <strong>Address:</strong> {order.address}
+                </p>
+
+                <p>
+                  <strong>Total:</strong> ₹{order.totalAmount}
+                </p>
+
                 <p>
                   <strong>Status:</strong>{" "}
                   <span className="order-status">
