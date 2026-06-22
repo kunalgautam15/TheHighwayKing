@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import ProtectedAdmin from "./components/ProtectedAdmin";
 
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
@@ -10,6 +11,7 @@ import TrackOrder from "./pages/TrackOrder";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 import "./App.css";
@@ -24,40 +26,28 @@ function App() {
 
         <Route path="/menu" element={<Menu />} />
 
-        <Route
-          path="/party-booking"
-          element={<PartyBooking />}
-        />
+        <Route path="/gallery" element={<Gallery />} />
 
-        <Route
-          path="/table-booking"
-          element={<TableBooking />}
-        />
+        <Route path="/party-booking" element={<PartyBooking />} />
 
-        <Route
-          path="/track-order"
-          element={<TrackOrder />}
-        />
+        <Route path="/table-booking" element={<TableBooking />} />
 
-        <Route
-          path="/gallery"
-          element={<Gallery />}
-        />
+        <Route path="/track-order" element={<TrackOrder />} />
 
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
+        <Route path="/contact" element={<Contact />} />
+
+        <Route path="/admin-login" element={<AdminLogin />} />
 
         <Route
           path="/admin"
-          element={<Admin />}
+          element={
+            <ProtectedAdmin>
+              <Admin />
+            </ProtectedAdmin>
+          }
         />
 
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
