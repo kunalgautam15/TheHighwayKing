@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import Hero from "../components/Hero";
 import restaurant from "../assets/restaurant.webp.webp";
@@ -6,8 +7,27 @@ import galleryData from "../data/galleryData";
 
 import "./Home.css";
 
+const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
+
 function Home() {
-  const galleryImages = galleryData.slice(0, 6);
+  const [galleryImages, setGalleryImages] = useState(galleryData.slice(0, 6));
+
+  useEffect(() => {
+    getGalleryImages();
+  }, []);
+
+  const getGalleryImages = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/gallery`);
+      const data = await response.json();
+
+      if (data.success && data.images.length > 0) {
+        setGalleryImages(data.images.slice(0, 6));
+      }
+    } catch (error) {
+      console.log("Home gallery loading failed. Showing default gallery.", error);
+    }
+  };
 
   return (
     <main className="home-page">
@@ -106,7 +126,7 @@ function Home() {
 
         <div className="gallery-grid-v2">
           {galleryImages.map((item) => (
-            <div className="gallery-item-v2" key={item.id}>
+            <div className="gallery-item-v2" key={item._id || item.id}>
               <img src={item.image} alt={item.title} />
             </div>
           ))}

@@ -11,6 +11,7 @@ function Admin() {
   const [partyBookings, setPartyBookings] = useState([]);
   const [tableBookings, setTableBookings] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [galleryImages, setGalleryImages] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("orders");
@@ -20,6 +21,12 @@ function Admin() {
     price: "",
     category: "",
     description: "",
+    image: "",
+  });
+
+  const [galleryForm, setGalleryForm] = useState({
+    title: "",
+    category: "",
     image: "",
   });
 
@@ -45,6 +52,7 @@ function Admin() {
       getPartyBookings(),
       getTableBookings(),
       getMenuItems(),
+      getGalleryImages(),
     ]);
 
     setLoading(false);
@@ -54,12 +62,7 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/orders`);
       const data = await response.json();
-
-      if (Array.isArray(data)) {
-        setOrders(data);
-      } else {
-        setOrders([]);
-      }
+      setOrders(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Orders loading failed:", error);
       setOrders([]);
@@ -70,12 +73,7 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/bookings`);
       const data = await response.json();
-
-      if (Array.isArray(data)) {
-        setPartyBookings(data);
-      } else {
-        setPartyBookings([]);
-      }
+      setPartyBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Party bookings loading failed:", error);
       setPartyBookings([]);
@@ -86,12 +84,7 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
       const data = await response.json();
-
-      if (Array.isArray(data)) {
-        setTableBookings(data);
-      } else {
-        setTableBookings([]);
-      }
+      setTableBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Table bookings loading failed:", error);
       setTableBookings([]);
@@ -111,6 +104,22 @@ function Admin() {
     } catch (error) {
       console.log("Menu loading failed:", error);
       setMenuItems([]);
+    }
+  };
+
+  const getGalleryImages = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/gallery`);
+      const data = await response.json();
+
+      if (data.success) {
+        setGalleryImages(data.images || []);
+      } else {
+        setGalleryImages([]);
+      }
+    } catch (error) {
+      console.log("Gallery loading failed:", error);
+      setGalleryImages([]);
     }
   };
 
@@ -179,6 +188,71 @@ function Admin() {
       }
     } catch (error) {
       alert("Unable to delete menu item.");
+      console.log(error);
+    }
+  };
+
+  const addGalleryImage = async (e) => {
+    e.preventDefault();
+
+    if (!galleryForm.title || !galleryForm.image) {
+      alert("Gallery title and image URL are required.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/gallery`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: galleryForm.title.trim(),
+          category: galleryForm.category.trim() || "Restaurant",
+          image: galleryForm.image.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Gallery image added successfully!");
+
+        setGalleryForm({
+          title: "",
+          category: "",
+          image: "",
+        });
+
+        getGalleryImages();
+      } else {
+        alert(data.message || "Gallery image was not added.");
+      }
+    } catch (error) {
+      alert("Unable to add gallery image.");
+      console.log(error);
+    }
+  };
+
+  const deleteGalleryImage = async (id) => {
+    const confirmDelete = window.confirm("Delete this gallery image?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/gallery/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Gallery image deleted!");
+        getGalleryImages();
+      } else {
+        alert(data.message || "Gallery image was not deleted.");
+      }
+    } catch (error) {
+      alert("Unable to delete gallery image.");
       console.log(error);
     }
   };
@@ -283,7 +357,7 @@ function Admin() {
         <div>
           <span>THE HIGHWAY KING</span>
           <h1>Admin Dashboard</h1>
-          <p>Manage orders, bookings and menu items from one place.</p>
+          <p>Manage orders, bookings, menu and gallery from one place.</p>
         </div>
 
         <div className="admin-actions">
@@ -320,6 +394,11 @@ function Admin() {
           <h2>{menuItems.length}</h2>
           <p>Menu Items</p>
         </div>
+
+        <div>
+          <h2>{galleryImages.length}</h2>
+          <p>Gallery Images</p>
+        </div>
       </section>
 
       <section className="admin-tabs">
@@ -349,6 +428,13 @@ function Admin() {
           onClick={() => setActiveTab("menu")}
         >
           Menu Management
+        </button>
+
+        <button
+          className={activeTab === "gallery" ? "active" : ""}
+          onClick={() => setActiveTab("gallery")}
+        >
+          Gallery Management
         </button>
       </section>
 
@@ -612,6 +698,88 @@ function Admin() {
                       onClick={() => deleteMenuItem(item._id)}
                     >
                       Delete Dish
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {activeTab === "gallery" && (
+        <>
+          <section className="admin-section">
+            <h2>Add Gallery Image</h2>
+
+            <form className="admin-menu-form" onSubmit={addGalleryImage}>
+              <input
+                type="text"
+                placeholder="Image Title"
+                value={galleryForm.title}
+                onChange={(e) =>
+                  setGalleryForm({
+                    ...galleryForm,
+                    title: e.target.value,
+                  })
+                }
+                required
+              />
+
+              <input
+                type="text"
+                placeholder="Category e.g. Food, Ambience"
+                value={galleryForm.category}
+                onChange={(e) =>
+                  setGalleryForm({
+                    ...galleryForm,
+                    category: e.target.value,
+                  })
+                }
+              />
+
+              <input
+                type="text"
+                placeholder="Image URL"
+                value={galleryForm.image}
+                onChange={(e) =>
+                  setGalleryForm({
+                    ...galleryForm,
+                    image: e.target.value,
+                  })
+                }
+                required
+              />
+
+              <button type="submit">Add Image</button>
+            </form>
+          </section>
+
+          <section className="admin-section">
+            <h2>Gallery Images</h2>
+
+            <div className="admin-grid">
+              {galleryImages.length === 0 ? (
+                <p className="empty-admin">
+                  No gallery images added from admin yet.
+                </p>
+              ) : (
+                galleryImages.map((item) => (
+                  <div className="admin-card" key={item._id}>
+                    <img src={item.image} alt={item.title} />
+
+                    <h3>{item.title}</h3>
+
+                    <p>
+                      <strong>Category:</strong>{" "}
+                      {item.category || "Restaurant"}
+                    </p>
+
+                    <button
+                      className="danger-btn"
+                      onClick={() => deleteGalleryImage(item._id)}
+                    >
+                      Delete Image
                     </button>
                   </div>
                 ))
