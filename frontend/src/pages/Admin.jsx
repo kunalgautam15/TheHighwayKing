@@ -30,18 +30,45 @@ function Admin() {
     image: "",
   });
 
+  const adminToken = localStorage.getItem("highwayKingAdminToken");
+
+  const authHeaders = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${adminToken}`,
+  };
+
   const totalRevenue = orders.reduce(
     (total, order) => total + (order.totalAmount || 0),
     0
   );
 
   useEffect(() => {
+    if (!adminToken) {
+      logoutAdmin();
+      return;
+    }
+
     refreshData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logoutAdmin = () => {
     localStorage.removeItem("highwayKingAdmin");
+    localStorage.removeItem("highwayKingAdminToken");
     navigate("/admin-login");
+  };
+
+  const handleUnauthorized = (data) => {
+    if (
+      data?.message === "Admin token is missing." ||
+      data?.message === "Invalid admin token."
+    ) {
+      alert("Admin session expired. Please login again.");
+      logoutAdmin();
+      return true;
+    }
+
+    return false;
   };
 
   const refreshData = async () => {
@@ -60,8 +87,14 @@ function Admin() {
 
   const getOrders = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/orders`);
+      const response = await fetch(`${BACKEND_URL}/api/orders`, {
+        headers: authHeaders,
+      });
+
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
+
       setOrders(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Orders loading failed:", error);
@@ -71,8 +104,14 @@ function Admin() {
 
   const getPartyBookings = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/bookings`);
+      const response = await fetch(`${BACKEND_URL}/api/bookings`, {
+        headers: authHeaders,
+      });
+
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
+
       setPartyBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Party bookings loading failed:", error);
@@ -82,8 +121,14 @@ function Admin() {
 
   const getTableBookings = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/table-bookings`);
+      const response = await fetch(`${BACKEND_URL}/api/table-bookings`, {
+        headers: authHeaders,
+      });
+
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
+
       setTableBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log("Table bookings loading failed:", error);
@@ -134,9 +179,7 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/menu`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: authHeaders,
         body: JSON.stringify({
           name: menuForm.name.trim(),
           price: Number(menuForm.price),
@@ -147,6 +190,8 @@ function Admin() {
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Menu item added successfully!");
@@ -176,9 +221,12 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/menu/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Menu item deleted!");
@@ -203,9 +251,7 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/gallery`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: authHeaders,
         body: JSON.stringify({
           title: galleryForm.title.trim(),
           category: galleryForm.category.trim() || "Restaurant",
@@ -214,6 +260,8 @@ function Admin() {
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Gallery image added successfully!");
@@ -241,9 +289,12 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/gallery/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Gallery image deleted!");
@@ -261,15 +312,15 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: authHeaders,
         body: JSON.stringify({
           orderStatus: newStatus,
         }),
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         getOrders();
@@ -289,9 +340,12 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Order deleted!");
@@ -312,9 +366,12 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Party booking deleted!");
@@ -335,9 +392,12 @@ function Admin() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/table-bookings/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       const data = await response.json();
+
+      if (handleUnauthorized(data)) return;
 
       if (data.success) {
         alert("Table booking deleted!");

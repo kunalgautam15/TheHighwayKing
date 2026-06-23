@@ -3,7 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const Order = require("../models/Order");
+const adminAuth = require("../middleware/adminAuth");
 
+// Public: place order
 router.post("/", async (req, res) => {
   try {
     const { customerName, phone, address, items, totalAmount } = req.body;
@@ -51,7 +53,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+// Admin only: get all orders
+router.get("/", adminAuth, async (req, res) => {
   try {
     const orders = await Order.find().sort({
       createdAt: -1,
@@ -66,6 +69,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Public: track order by phone
 router.get("/track/:phone", async (req, res) => {
   try {
     const phone = req.params.phone.trim();
@@ -88,7 +92,8 @@ router.get("/track/:phone", async (req, res) => {
   }
 });
 
-router.put("/:id/status", async (req, res) => {
+// Admin only: update order status
+router.put("/:id/status", adminAuth, async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
@@ -113,7 +118,8 @@ router.put("/:id/status", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+// Admin only: delete order
+router.delete("/:id", adminAuth, async (req, res) => {
   try {
     await Order.findByIdAndDelete(req.params.id);
 

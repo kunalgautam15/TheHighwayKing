@@ -2,22 +2,50 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminLogin.css";
 
+const BACKEND_URL = "https://name-the-highway-king-backend.onrender.com";
+
 function AdminLogin() {
   const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const ADMIN_PASSWORD = "highwayking@123";
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("highwayKingAdmin", "true");
-      navigate("/admin");
-    } else {
-      setError("Wrong password. Please try again.");
+    if (!password.trim()) {
+      setError("Please enter admin password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${BACKEND_URL}/api/auth/admin-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: password.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem("highwayKingAdmin", "true");
+        localStorage.setItem("highwayKingAdminToken", data.token);
+        navigate("/admin");
+      } else {
+        setError(data.message || "Wrong password. Please try again.");
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Backend server is not responding.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +68,9 @@ function AdminLogin() {
 
           {error && <span className="admin-login-error">{error}</span>}
 
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Checking..." : "Login"}
+          </button>
         </form>
       </div>
     </main>

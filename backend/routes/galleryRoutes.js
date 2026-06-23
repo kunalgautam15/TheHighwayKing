@@ -3,8 +3,10 @@ const express = require("express");
 const router = express.Router();
 
 const GalleryImage = require("../models/GalleryImage");
+const adminAuth = require("../middleware/adminAuth");
 
-router.post("/", async (req, res) => {
+// Admin only: add gallery image
+router.post("/", adminAuth, async (req, res) => {
   try {
     const { title, category, image } = req.body;
 
@@ -34,6 +36,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Public: get gallery images
 router.get("/", async (req, res) => {
   try {
     const images = await GalleryImage.find().sort({
@@ -52,7 +55,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+// Admin only: delete gallery image
+router.delete("/:id", adminAuth, async (req, res) => {
   try {
     await GalleryImage.findByIdAndDelete(req.params.id);
 

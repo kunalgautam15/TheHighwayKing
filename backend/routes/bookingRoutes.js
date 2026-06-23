@@ -3,7 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const Booking = require("../models/Booking");
+const adminAuth = require("../middleware/adminAuth");
 
+// Public: submit party booking
 router.post("/", async (req, res) => {
   try {
     const booking = await Booking.create(req.body);
@@ -21,7 +23,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+// Admin only: get all party bookings
+router.get("/", adminAuth, async (req, res) => {
   try {
     const bookings = await Booking.find().sort({
       createdAt: -1,
@@ -30,12 +33,14 @@ router.get("/", async (req, res) => {
     res.json(bookings);
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+// Admin only: delete party booking
+router.delete("/:id", adminAuth, async (req, res) => {
   try {
     await Booking.findByIdAndDelete(req.params.id);
 

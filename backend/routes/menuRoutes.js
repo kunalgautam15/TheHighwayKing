@@ -1,10 +1,12 @@
 const express = require("express");
+
 const router = express.Router();
 
 const MenuItem = require("../models/MenuItem");
+const adminAuth = require("../middleware/adminAuth");
 
-// Add new menu item
-router.post("/", async (req, res) => {
+// Admin only: add new menu item
+router.post("/", adminAuth, async (req, res) => {
   try {
     const item = await MenuItem.create(req.body);
 
@@ -21,7 +23,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all menu items
+// Public: get all menu items
 router.get("/", async (req, res) => {
   try {
     const items = await MenuItem.find().sort({ createdAt: -1 });
@@ -38,8 +40,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Update menu item
-router.put("/:id", async (req, res) => {
+// Admin only: update menu item
+router.put("/:id", adminAuth, async (req, res) => {
   try {
     const item = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -58,8 +60,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete menu item
-router.delete("/:id", async (req, res) => {
+// Admin only: delete menu item
+router.delete("/:id", adminAuth, async (req, res) => {
   try {
     await MenuItem.findByIdAndDelete(req.params.id);
 

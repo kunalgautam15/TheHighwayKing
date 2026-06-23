@@ -8,6 +8,7 @@ const tableBookingRoutes = require("./routes/tableBookingRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -21,10 +22,13 @@ app.use(
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/table-bookings", tableBookingRoutes);
